@@ -1,20 +1,11 @@
-# STEP 1: Compile the code
-FROM eclipse-temurin:17-jdk AS builder
-WORKDIR /app
+# Step 1: Use the Nginx image as the base
+FROM nginx:alpine
 
-# Copy your source files
-COPY . .
+# Step 2: Copy all files from your current folder into the Nginx HTML directory
+COPY . /usr/share/nginx/html/
 
-# Compile the code
-# (Assuming your main file is Main.java)
-RUN javac a.java
+# Step 3: Tell Docker to listen on port 80
+EXPOSE 80
 
-# STEP 2: Run the code
-FROM eclipse-temurin:17-jre
-WORKDIR /app
-
-# Copy the compiled .class files from the builder
-COPY --from=builder /app/*.class .
-
-# Run the app
-CMD ["java", "a"]
+# Step 4: Start the web server
+CMD ["nginx", "-g", "daemon off;"]
